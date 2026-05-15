@@ -1,0 +1,3069 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibSpace - Smart Library Reservation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f18ff;
+      --primary2: #7a3cff;
+      --pink: #ec4bb6;
+      --dark: #090922;
+      --text: #22223a;
+      --muted: #6f6b85;
+      --line: #eee9fb;
+      --soft: #f7f4ff;
+      --green: #0f9d58;
+      --danger: #ef4444;
+      --white: #fff;
+      --shadow: 0 18px 55px rgba(43, 28, 117, .09);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .container {
+      width: min(1320px, calc(100% - 72px));
+      margin: 0 auto;
+    }
+
+    .navbar {
+      height: 78px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .94);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #7b2dff, #e94bd4);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(79, 24, 255, .25);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 42px;
+    }
+
+    .nav-link {
+      border: 0;
+      background: transparent;
+      color: var(--dark);
+      font-weight: 800;
+      padding: 28px 0 24px;
+      position: relative;
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+    }
+
+    .nav-link.active:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .lang-toggle {
+      height: 42px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 0 14px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .login-chip, .user-chip {
+      border: 0;
+      border-radius: 14px;
+      font-weight: 900;
+    }
+
+    .login-chip {
+      color: #fff;
+      background: linear-gradient(135deg, #7c3cff, #4212ef);
+      padding: 12px 18px;
+      box-shadow: 0 10px 24px rgba(79, 24, 255, .22);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      color: var(--dark);
+    }
+
+    .avatar, .big-avatar, .huge-avatar {
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7b2dff, #2400d7);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      overflow: hidden;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+    }
+
+    .avatar img, .big-avatar img, .huge-avatar img, .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .account-dropdown {
+      position: absolute;
+      right: 36px;
+      top: 70px;
+      width: 250px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 24px 70px rgba(20, 15, 80, .16);
+      padding: 10px;
+      z-index: 100;
+    }
+
+    .dropdown-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 8px;
+    }
+
+    .dropdown-head strong {
+      display: block;
+    }
+
+    .dropdown-head span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .dropdown-item {
+      width: 100%;
+      border: 0;
+      background: #fff;
+      text-align: left;
+      padding: 13px 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .dropdown-item:hover {
+      background: var(--soft);
+      color: var(--primary);
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      min-height: 570px;
+      background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, .96) 38%, rgba(255, 255, 255, .18) 60%, rgba(255, 255, 255, 0) 100%), url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=80') center right/cover;
+      display: flex;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(44px, 5vw, 76px);
+      line-height: 1.02;
+      color: var(--dark);
+      margin: 0 0 22px;
+      max-width: 680px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), var(--pink));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 560px;
+      line-height: 1.85;
+      color: #282842;
+      font-size: 17px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, #7c3cff, #4212ef);
+      box-shadow: 0 14px 28px rgba(79, 24, 255, .24);
+    }
+
+    .btn-outline {
+      color: var(--dark);
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .btn-full {
+      width: 100%;
+      font-size: 17px;
+      padding: 16px 22px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 34px;
+      margin-top: 42px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-right: 28px;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat:last-child {
+      border-right: 0;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 21px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section {
+      padding: 66px 0 56px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 34px;
+      color: var(--dark);
+      margin: 0 0 32px;
+    }
+
+    .section-title:after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 99px;
+      margin: 12px auto 0;
+    }
+
+    .space-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .space-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .space-img {
+      height: 210px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .space-body {
+      padding: 26px 24px 28px;
+      min-height: 158px;
+    }
+
+    .space-card h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+
+    .space-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .about-hero {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      min-height: 610px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .about-left {
+      padding: 64px 50px 58px 70px;
+      background: linear-gradient(180deg, #fbf8ff, #f7f3ff);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .section-badge {
+      width: max-content;
+      padding: 7px 15px;
+      border-radius: 999px;
+      background: #f0e9ff;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    .about-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 88px;
+      letter-spacing: -4px;
+      line-height: .94;
+      margin: 0;
+      color: var(--primary);
+    }
+
+    .about-line {
+      width: 66px;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--primary);
+      margin: 28px 0;
+    }
+
+    .about-left p {
+      max-width: 540px;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #24243a;
+      margin: 0 0 18px;
+    }
+
+    .about-right {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .about-fade {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 260px;
+      background: linear-gradient(90deg, #f7f3ff 0%, rgba(247, 243, 255, .75) 38%, rgba(247, 243, 255, 0) 100%);
+    }
+
+    .floor-map-section {
+      padding: 34px 48px 54px;
+      background: #fff;
+    }
+
+    .floor-title-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .floor-title-wrap h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 38px;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .floor-line {
+      width: 70px;
+      height: 2px;
+      background: #bca8ff;
+      border-radius: 99px;
+    }
+
+    .floor-slider-card {
+      width: min(1260px, 100%);
+      margin: 0 auto;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.55fr .85fr;
+      gap: 34px;
+      align-items: center;
+      padding: 24px;
+      border: 1px solid #eeeaf8;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 20px 50px rgba(33, 21, 100, .1);
+      min-height: 380px;
+    }
+
+    .floor-image img {
+      height: 330px;
+      width: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+    }
+
+    .floor-info-panel {
+      padding: 10px 14px;
+    }
+
+    .floor-info-panel h3 {
+      font-size: 42px;
+      margin: 0 0 10px;
+      color: var(--dark);
+    }
+
+    .floor-subtitle {
+      color: var(--primary);
+      font-weight: 900;
+      margin: 0 0 20px;
+    }
+
+    .floor-detail-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .floor-detail-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+
+    .floor-detail-item span {
+      color: var(--muted);
+    }
+
+    .floor-detail-item strong {
+      text-align: right;
+      color: var(--dark);
+    }
+
+    .floor-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--primary);
+      font-size: 30px;
+      box-shadow: 0 12px 28px rgba(49, 31, 133, .12);
+    }
+
+    .floor-prev {
+      left: -22px;
+    }
+
+    .floor-next {
+      right: -22px;
+    }
+
+    .floor-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #ded6fb;
+    }
+
+    .dot.active {
+      background: var(--primary);
+    }
+
+    .booking-layout {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 285px minmax(0, 1fr) 340px;
+      gap: 26px;
+      align-items: start;
+      padding: 28px 36px 48px 0;
+    }
+
+    .side-card, .summary-card, .note-card, .account-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 35px rgba(39, 25, 112, .045);
+    }
+
+    .side-card {
+      padding: 22px 18px 24px;
+      border-left: 0;
+      border-radius: 0 24px 24px 0;
+      min-height: calc(100vh - 116px);
+      position: sticky;
+      top: 98px;
+    }
+
+    .side-option {
+      border: 0;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      padding: 16px 14px;
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      font-weight: 900;
+      color: var(--dark);
+    }
+
+    .side-option small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+
+    .side-option.active {
+      background: var(--soft);
+      color: var(--primary);
+      box-shadow: inset 4px 0 0 var(--primary);
+    }
+
+    .quick-guide {
+      margin-top: 28px;
+      border-top: 1px solid var(--line);
+      padding-top: 22px;
+    }
+
+    .quick-guide strong {
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .guide-item {
+      display: flex;
+      gap: 10px;
+      color: var(--text);
+      margin: 13px 0;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .guide-number {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-weight: 900;
+      font-size: 12px;
+      flex: 0 0 24px;
+    }
+
+    .main-panel {
+      min-width: 0;
+    }
+
+    .page-heading {
+      font-size: 32px;
+      margin: 0 0 8px;
+      color: var(--dark);
+      letter-spacing: -1px;
+    }
+
+    .page-desc {
+      margin: 0 0 26px;
+      color: var(--muted);
+    }
+
+    .step-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      margin: 22px 0 14px;
+    }
+
+    .step-number {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .form-grid.two {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 9px;
+    }
+
+    .input, .select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 15px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    .input:focus, .select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 24, 255, .08);
+    }
+
+    .success-box {
+      margin: 18px 0 24px;
+      padding: 17px 20px;
+      border-radius: 16px;
+      background: #eefaf3;
+      color: #126b3b;
+      line-height: 1.65;
+      font-weight: 700;
+    }
+
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      margin-top: 12px;
+    }
+
+    .room-table, .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 15px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    th {
+      background: #fbfaff;
+      color: var(--dark);
+    }
+
+    .floor-row td {
+      background: #f7f4ff;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+    }
+
+    .dot-small {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-small.green {
+      background: var(--green);
+    }
+
+    .dot-small.gray {
+      background: #9993bf;
+    }
+
+    .room-action {
+      border: 1px solid var(--primary);
+      background: #fff;
+      color: var(--primary);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 900;
+    }
+
+    .room-action:disabled {
+      border-color: var(--line);
+      color: #aaa;
+      background: #fafafa;
+      cursor: not-allowed;
+    }
+
+    .room-action.selected {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .note-card {
+      padding: 20px 22px;
+      margin-top: 24px;
+      background: #fbfaff;
+    }
+
+    .note-card h4 {
+      margin: 0 0 12px;
+    }
+
+    .note-card li {
+      margin: 8px 0;
+      color: #46435d;
+      line-height: 1.55;
+    }
+
+    .summary-card {
+      padding: 24px;
+      position: sticky;
+      top: 98px;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 20px;
+      font-size: 22px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .summary-row span {
+      color: var(--muted);
+    }
+
+    .summary-row strong {
+      text-align: right;
+      color: var(--dark);
+    }
+
+    .price-area {
+      margin-top: 18px;
+    }
+
+    .discount {
+      color: var(--green) !important;
+    }
+
+    .total {
+      font-size: 24px;
+      color: var(--primary) !important;
+    }
+
+    .payment-box {
+      margin: 20px 0;
+      padding: 18px;
+      border-radius: 16px;
+      background: #fbfaff;
+      font-weight: 800;
+    }
+
+    .hint-box {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      padding: 16px;
+      border-radius: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .seat-panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      background: #fff;
+    }
+
+    .seat-legend {
+      display: flex;
+      gap: 22px;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .legend-box.free {
+      background: #e9faee;
+    }
+
+    .legend-box.booked {
+      background: #e7e5ef;
+    }
+
+    .legend-box.selected {
+      border: 2px solid var(--primary);
+    }
+
+    .seat-grid {
+      display: grid;
+      grid-template-columns: 35px repeat(5, 1fr);
+      gap: 14px;
+      align-items: center;
+    }
+
+    .seat-label {
+      text-align: center;
+      font-weight: 900;
+      color: var(--dark);
+    }
+
+    .seat-btn {
+      border: 1px solid #d9f3df;
+      background: #f0fbf3;
+      color: var(--green);
+      border-radius: 12px;
+      padding: 16px 6px;
+      font-weight: 900;
+    }
+
+    .seat-btn.booked {
+      background: #f0eef5;
+      color: #6e6b80;
+      border-color: #e7e5ef;
+      cursor: not-allowed;
+    }
+
+    .seat-btn.selected {
+      background: #fff;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .selected-seat-bar {
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 9px 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-weight: 900;
+      color: var(--primary);
+      background: #fff;
+    }
+
+    .account-layout {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 285px minmax(0, 1fr);
+      gap: 30px;
+      padding: 34px 48px 48px 0;
+    }
+
+    .profile-side {
+      padding: 22px;
+      border-left: 0;
+      border-radius: 0 24px 24px 0;
+      min-height: calc(100vh - 112px);
+      position: sticky;
+      top: 98px;
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .big-avatar {
+      width: 68px;
+      height: 68px;
+      font-size: 24px;
+    }
+
+    .profile-nav button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      padding: 16px;
+      border-radius: 14px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .profile-nav button.active {
+      background: var(--soft);
+      color: var(--primary);
+      box-shadow: inset 4px 0 0 var(--primary);
+    }
+
+    .account-card {
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .card-desc {
+      margin: 6px 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .activity-feed {
+      display: grid;
+      gap: 14px;
+    }
+
+    .activity-item {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .activity-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    .activity-content strong {
+      display: block;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .activity-content span {
+      display: block;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .activity-time {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .history-filter {
+      width: 180px;
+    }
+
+    .profile-info-card {
+      padding: 28px 32px;
+    }
+
+    .card-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card-heading-row h3 {
+      margin: 0;
+    }
+
+    .edit-btn {
+      border: 1px solid var(--primary);
+      background: #fff;
+      color: var(--primary);
+      border-radius: 12px;
+      padding: 11px 18px;
+      font-weight: 900;
+    }
+
+    .personal-info-layout {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .profile-avatar-wrap {
+      position: relative;
+      width: 124px;
+      margin: 6px auto 0;
+    }
+
+    .huge-avatar {
+      width: 124px;
+      height: 124px;
+      font-size: 42px;
+    }
+
+    .camera-btn {
+      position: absolute;
+      right: -4px;
+      bottom: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      place-items: center;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 44px;
+      width: 100%;
+    }
+
+    .info-item {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+    }
+
+    .info-item span {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .info-item strong {
+      font-size: 17px;
+    }
+
+    .cancel-action {
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 900;
+    }
+
+    .cancel-action:disabled {
+      border-color: var(--line);
+      color: #aaa;
+      cursor: not-allowed;
+    }
+
+    .cancelled-text {
+      display: block;
+      color: var(--danger);
+      font-weight: 800;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .confirm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 9, 34, .42);
+      display: grid;
+      place-items: center;
+      z-index: 120;
+      padding: 24px;
+    }
+
+    .confirm-box {
+      width: min(480px, 100%);
+      background: #fff;
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .18);
+    }
+
+    .confirm-box h3 {
+      margin: 0 0 10px;
+    }
+
+    .confirm-box p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      background: #111024;
+      color: #fff;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .18);
+      transform: translateY(120px);
+      opacity: 0;
+      transition: .25s ease;
+      z-index: 140;
+      max-width: 420px;
+      line-height: 1.55;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .login-page-wrap {
+      min-height: calc(100vh - 78px);
+      background: #f4f2ff;
+      display: grid;
+      place-items: center;
+      padding: 38px;
+    }
+
+    .login-card {
+      width: min(1120px, 100%);
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      background: #fff;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 20px 70px rgba(26, 18, 80, .12);
+    }
+
+    .login-left {
+      background: linear-gradient(180deg, #fbfaff, #f0edff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 46px;
+    }
+
+    .login-logo-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--dark);
+    }
+
+    .login-illustration {
+      width: 400px;
+      height: 320px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(124, 60, 255, .08), rgba(124, 60, 255, .18));
+      display: grid;
+      place-items: center;
+      color: #6b51e8;
+      font-size: 68px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .login-right {
+      padding: 96px 68px;
+    }
+
+    .login-right h1 {
+      font-size: 44px;
+      text-align: center;
+      margin: 0 0 14px;
+      color: var(--dark);
+    }
+
+    .login-right p {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 42px;
+      font-size: 17px;
+    }
+
+    .login-field {
+      margin-bottom: 24px;
+    }
+
+    .login-field label {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .login-input {
+      height: 58px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px;
+      color: var(--primary);
+    }
+
+    .login-input input {
+      border: 0;
+      outline: none;
+      flex: 1;
+      font-size: 17px;
+      color: var(--text);
+    }
+
+    .login-note {
+      margin-top: 30px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .test-accounts {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #fbfaff;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer {
+      margin: 56px 0 0;
+      width: 100%;
+      background: linear-gradient(135deg, #fbf8ff, #f3f0ff);
+      border-top: 1px solid var(--line);
+      padding: 34px max(48px, calc((100vw - 1280px) / 2)) 24px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.25fr .95fr;
+      gap: 72px;
+      align-items: start;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer p, .footer li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+    }
+
+    .copyright {
+      border-top: 1px solid var(--line);
+      margin: 24px auto 0;
+      padding-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 1280px;
+    }
+
+    .profile-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 15, 35, .45);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .profile-modal {
+      width: min(760px, 96vw);
+      background: #fff;
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: 0 30px 80px rgba(30, 20, 80, .25);
+      position: relative;
+    }
+
+    .profile-modal-close {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 50%;
+      background: #f3efff;
+      color: #5b35ff;
+      font-size: 26px;
+    }
+
+    .profile-modal h2 {
+      font-size: 28px;
+      margin: 0 0 8px;
+    }
+
+    .profile-modal p {
+      margin: 0 0 24px;
+      color: var(--muted);
+    }
+
+    .avatar-edit-box {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .avatar-preview {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7b35ff, #4818e8);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .avatar-upload-btn {
+      padding: 12px 18px;
+      border: 1px solid #6d4aff;
+      border-radius: 14px;
+      color: #5b35ff;
+      font-weight: 800;
+      cursor: pointer;
+      background: #fbfaff;
+    }
+
+    .profile-edit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .profile-edit-grid label {
+      font-weight: 800;
+      color: #1f1d35;
+      font-size: 14px;
+    }
+
+    .profile-edit-grid input {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px 14px;
+      border: 1px solid #ded8ff;
+      border-radius: 14px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .profile-edit-grid input:focus {
+      border-color: #6d4aff;
+      box-shadow: 0 0 0 4px rgba(109, 74, 255, .12);
+    }
+
+    .profile-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .cancel-profile-edit, .save-profile-edit {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 20px;
+      font-weight: 900;
+    }
+
+    .cancel-profile-edit {
+      background: #f3efff;
+      color: #5d5675;
+    }
+
+    .save-profile-edit {
+      background: linear-gradient(135deg, #7b35ff, #4818e8);
+      color: #fff;
+      box-shadow: 0 14px 26px rgba(91, 53, 255, .22);
+    }
+
+    @media(max-width: 1180px) {
+      .container {
+        width: calc(100% - 48px);
+      }
+      .booking-layout, .account-layout {
+        grid-template-columns: 1fr;
+        width: calc(100% - 48px);
+        margin: 0 auto;
+        padding: 24px 0 42px;
+      }
+      .side-card, .profile-side, .summary-card {
+        position: static !important;
+        border-left: 1px solid var(--line);
+        border-radius: 24px;
+        min-height: auto;
+      }
+      .space-grid, .floor-slider-card, .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .floor-prev {
+        left: 10px;
+      }
+      .floor-next {
+        right: 10px;
+      }
+      .floor-image img {
+        height: 300px;
+      }
+      .about-hero {
+        grid-template-columns: 1fr;
+      }
+      .about-right {
+        min-height: 360px;
+      }
+      .form-grid, .form-grid.two {
+        grid-template-columns: 1fr;
+      }
+      .summary-card {
+        top: auto;
+      }
+      .login-card {
+        grid-template-columns: 1fr;
+      }
+      .login-left {
+        display: none;
+      }
+      .login-right {
+        padding: 58px 36px;
+      }
+      .account-dropdown {
+        right: 24px;
+      }
+    }
+
+    @media(max-width: 720px) {
+      .container {
+        width: calc(100% - 28px);
+      }
+      .nav-menu {
+        display: none;
+      }
+      .hero {
+        min-height: 620px;
+        background-position: center;
+      }
+      .stats {
+        gap: 18px;
+      }
+      .stat {
+        border-right: 0;
+      }
+      .personal-info-layout, .info-grid, .profile-edit-grid {
+        grid-template-columns: 1fr;
+      }
+      .seat-grid {
+        grid-template-columns: 26px repeat(5, 1fr);
+        gap: 8px;
+      }
+      .seat-btn {
+        padding: 13px 2px;
+        font-size: 12px;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      .selected-seat-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .floor-map-section {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .floor-slider-card {
+        padding: 16px;
+      }
+      .floor-image img {
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="navbar">
+  <div class="container nav-inner">
+    <div class="brand">
+      <div class="logo">📖</div>
+      <div>
+        <div class="brand-title">Lib<span style="color:var(--primary)">Space</span></div>
+        <div class="brand-subtitle">Smart Library Reservation</div>
+      </div>
+    </div>
+    <nav class="nav-menu">
+      <button class="nav-link active" data-page="home">Trang chủ</button>
+      <button class="nav-link" data-page="about">Giới thiệu</button>
+      <button class="nav-link" data-page="booking">Đặt Phòng</button>
+    </nav>
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle">🌐 <span id="currentLang">VI</span></button>
+      <button class="login-chip" data-page="login" id="loginButton">👤 Đăng nhập</button>
+      <button class="user-chip hidden" id="accountButton"><span class="avatar" id="navAvatar">NA</span><span id="navUserName">Nguyễn Văn A</span>▾</button>
+      <div class="account-dropdown hidden" id="accountDropdown">
+        <div class="dropdown-head">
+          <span class="avatar" id="dropdownAvatar">NA</span>
+          <div>
+            <strong id="dropdownName">Nguyễn Văn A</strong>
+            <span id="dropdownProgram">Sinh viên CLC</span>
+          </div>
+        </div>
+        <button class="dropdown-item" id="openAccountFromDropdown">👤 Thông tin tài khoản</button>
+        <button class="dropdown-item" id="logoutFromDropdown">🚪 Đăng xuất</button>
+      </div>
+    </div>
+  </div>
+</header>
+<main>
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="container">
+      <div class="eyebrow">✦ Chào mừng đến với LibSpace</div>
+      <h1>Không gian học tập <span class="gradient-text">thông minh</span> cho <span class="gradient-text">sinh viên</span></h1>
+      <p>Đặt trước phòng học nhóm và chỗ học qua đêm tại thư viện một cách nhanh chóng, tiện lợi. Khu học tự do vẫn được sử dụng miễn phí khi đến trực tiếp thư viện.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" data-page="booking">Đặt phòng ngay →</button>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div>
+            <strong>2.4K+</strong>
+            <span>Sinh viên sử dụng</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div>
+            <strong>4.9</strong>
+            <span>Đánh giá</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div>
+            <strong>10K+</strong>
+            <span>Lượt đặt thành công</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section class="section container">
+    <h2 class="section-title">Không gian đa dạng, phù hợp mọi nhu cầu</h2>
+    <div class="space-grid">
+      <article class="space-card">
+        <div class="space-img" style="background-image:url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="space-body">
+          <h3>Không gian học tự do</h3>
+          <p>Không gian mở dành cho học cá nhân, đọc sách và làm bài. Sinh viên đến trực tiếp, không cần đặt lịch.</p>
+        </div>
+      </article>
+      <article class="space-card">
+        <div class="space-img" style="background-image:url('https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="space-body">
+          <h3>Phòng học nhóm</h3>
+          <p>Không gian riêng để thảo luận và làm việc nhóm. Có 8 phòng ở tầng 1 và tầng 2, cần đặt lịch trước.</p>
+        </div>
+      </article>
+      <article class="space-card">
+        <div class="space-img" style="background-image:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="space-body">
+          <h3>Khu học qua đêm</h3>
+          <p>Hỗ trợ sinh viên học tập xuyên đêm tại tầng 3. Cần đăng ký chỗ trước theo ngày.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+</section>
+<section id="about" class="page">
+  <div class="about-hero">
+    <div class="about-left">
+      <div class="section-badge">GIỚI THIỆU VỀ CHÚNG TÔI</div>
+      <h1 class="about-title">LibSpace</h1>
+      <div class="about-line"></div>
+      <p>LibSpace là hệ thống đặt chỗ học tập trực tuyến lấy cảm hứng từ mô hình thư viện hiện đại của Trường Đại học Tôn Đức Thắng, giúp sinh viên dễ dàng tìm kiếm, đặt chỗ và quản lý lịch học tập một cách nhanh chóng, tiện lợi.</p>
+      <p>Hệ thống hỗ trợ nhiều không gian học tập như khu học tự do, phòng họp nhóm và khu học qua đêm, mang đến trải nghiệm học tập hiện đại và hiệu quả hơn.</p>
+      <p>Thư viện gồm 3 tầng: tầng 1 và tầng 2 có khu học tự do cùng phòng họp nhóm; tầng 3 dành cho khu học qua đêm cần đăng ký trước.</p>
+    </div>
+    <div class="about-right">
+      <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1600&auto=format&fit=crop" alt="Library">
+      <div class="about-fade"></div>
+    </div>
+  </div>
+  <div class="floor-map-section">
+    <div class="floor-title-wrap">
+      <div class="floor-line"></div>
+      <h2>Tổng quan các tầng</h2>
+      <div class="floor-line"></div>
+    </div>
+    <div class="floor-slider-card">
+      <button class="floor-nav floor-prev" id="floorPrevBtn">‹</button>
+      <div class="floor-image">
+        <img id="floorPreviewImage" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop" alt="Floor Preview">
+      </div>
+      <div class="floor-info-panel">
+        <h3 id="floorName">Tầng 1</h3>
+        <p class="floor-subtitle" id="floorSubtitle">Khu học tự do & Phòng họp nhóm</p>
+        <div class="floor-detail-list" id="floorDetailList"></div>
+      </div>
+      <button class="floor-nav floor-next" id="floorNextBtn">›</button>
+    </div>
+    <div class="floor-dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+</section>
+<section id="booking" class="page">
+  <div class="booking-layout">
+    <aside class="side-card">
+      <button class="side-option active" data-type="room">
+        <span>Phòng họp nhóm</span>
+        <small>Đặt phòng họp nhóm theo nhu cầu</small>
+      </button>
+      <button class="side-option" data-type="overnight">
+        <span>Khu học qua đêm</span>
+        <small>Đặt chỗ học qua đêm 22:00 - 06:00</small>
+      </button>
+      <div class="quick-guide">
+        <strong>Hướng dẫn nhanh</strong>
+        <div class="guide-item"><span class="guide-number">1</span><span>Chọn ngày và thời gian</span></div>
+        <div class="guide-item"><span class="guide-number">2</span><span>Xem phòng/chỗ còn trống</span></div>
+        <div class="guide-item"><span class="guide-number">3</span><span>Chọn phòng hoặc chỗ ngồi</span></div>
+        <div class="guide-item"><span class="guide-number">4</span><span>Xác nhận và đặt chỗ</span></div>
+      </div>
+    </aside>
+    <section class="main-panel">
+      <div id="roomBooking">
+        <h1 class="page-heading">Đặt phòng họp nhóm</h1>
+        <p class="page-desc">Chọn thời gian, hệ thống sẽ hiển thị các phòng còn trống cho bạn.</p>
+        <div class="step-title"><span class="step-number">1</span> Chọn ngày và thời gian</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Ngày</label>
+            <input class="input" type="date" id="roomDate" value="2026-05-15">
+          </div>
+          <div class="field">
+            <label>Giờ bắt đầu</label>
+            <select class="select" id="startTime"></select>
+          </div>
+          <div class="field">
+            <label>Giờ kết thúc</label>
+            <select class="select" id="endTime"></select>
+          </div>
+        </div>
+        <div class="success-box" id="roomAvailabilityText"></div>
+        <div class="step-title"><span class="step-number">2</span> Danh sách phòng còn trống</div>
+        <div class="table-wrap">
+          <table class="room-table" id="roomTable"></table>
+        </div>
+        <div class="note-card">
+          <h4>ⓘ Lưu ý</h4>
+          <ul>
+            <li>Vui lòng đến trước giờ đặt 15 phút để chuẩn bị.</li>
+            <li>Phòng sẽ tự động bị hủy nếu sinh viên không đến quầy lễ tân thư viện để check-in trong vòng 30 phút kể từ thời gian bắt đầu đặt chỗ.</li>
+            <li>Khi đến thư viện, đọc email hoặc MSSV tại quầy lễ tân để nhân viên kiểm tra booking.</li>
+          </ul>
+        </div>
+      </div>
+      <div id="overnightBooking" style="display:none">
+        <h1 class="page-heading">Đặt chỗ học qua đêm</h1>
+        <p class="page-desc">Chọn ngày và chỗ ngồi để đặt chỗ học qua đêm tại tầng 3.</p>
+        <div class="step-title"><span class="step-number">1</span> Chọn ngày</div>
+        <div class="form-grid two">
+          <div class="field">
+            <label>Ngày</label>
+            <input class="input" type="date" id="nightDate" value="2026-05-15">
+          </div>
+          <div class="field">
+            <label>Giờ hoạt động cố định</label>
+            <input class="input" value="22:00 - 06:00 hôm sau" disabled>
+          </div>
+        </div>
+        <div class="step-title"><span class="step-number">2</span> Chọn chỗ ngồi <span style="color:var(--muted);font-weight:600">(Tối đa 1 chỗ / đêm)</span></div>
+        <div class="seat-panel">
+          <div class="seat-legend">
+            <span class="legend-item"><i class="legend-box free"></i>Còn trống</span>
+            <span class="legend-item"><i class="legend-box booked"></i>Đã đặt</span>
+            <span class="legend-item"><i class="legend-box selected"></i>Đang chọn</span>
+          </div>
+          <div class="seat-grid" id="seatGrid"></div>
+          <div class="selected-seat-bar">
+            <div>Bạn đã chọn: <span class="tag" id="selectedSeatTag">C03</span> <span style="color:var(--muted)">| Khu học qua đêm - Tầng 3</span></div>
+            <button class="room-action" id="clearSeat">Xóa chọn</button>
+          </div>
+        </div>
+        <div class="note-card">
+          <h4>ⓘ Lưu ý</h4>
+          <ul>
+            <li>Vui lòng giữ yên tĩnh và không làm ảnh hưởng đến người khác.</li>
+            <li>Chỗ ngồi sẽ tự động bị hủy nếu sinh viên không check-in tại quầy lễ tân trong vòng 30 phút kể từ giờ bắt đầu.</li>
+            <li>Rời khỏi thư viện trước 06:00 sáng hôm sau.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <aside class="summary-card">
+      <h3>Thông tin đặt chỗ</h3>
+      <div id="summaryRows"></div>
+      <div class="price-area" id="priceRows"></div>
+      <div class="payment-box">💳 Thanh toán: Tiền mặt tại thư viện</div>
+      <button class="btn btn-primary btn-full" id="submitBooking">📅 Đặt chỗ ngay</button>
+      <div class="hint-box">Sau khi đặt chỗ thành công, bạn có thể xem lịch sử trong mục Thông tin tài khoản. Khi đến thư viện, đọc email hoặc MSSV tại quầy lễ tân để nhân viên kiểm tra.</div>
+    </aside>
+  </div>
+</section>
+<section id="account" class="page">
+  <div class="account-layout">
+    <aside class="side-card profile-side">
+      <div class="profile-card">
+        <div class="big-avatar" id="sideAvatar">NA</div>
+        <div>
+          <strong id="profileName">Nguyễn Văn A</strong><br>
+          <span id="profileEmail">clc@student.tdtu.edu.vn</span>
+        </div>
+      </div>
+      <div class="profile-nav">
+        <button class="active" id="profileMenuBtn">👤 Thông tin tài khoản</button>
+        <button id="historyMenuBtn">📅 Lịch sử đặt chỗ</button>
+        <button id="logoutMenuBtn">🚪 Đăng xuất</button>
+      </div>
+    </aside>
+    <section>
+      <h1 class="page-heading" id="accountHeading">Thông tin tài khoản</h1>
+      <p class="page-desc">Quản lý thông tin cá nhân và lịch sử đặt chỗ.</p>
+      <div class="account-card profile-info-card" id="profileInfoCard">
+        <div class="card-heading-row">
+          <h3>Thông tin cá nhân</h3>
+        </div>
+        <div class="personal-info-layout">
+          <div class="profile-avatar-wrap">
+            <div class="huge-avatar" id="profileAvatar">NA</div>
+            <button class="camera-btn" id="cameraProfileBtn">📷</button>
+          </div>
+          <div class="info-grid">
+            <div class="info-item"><span>Họ và tên</span><strong id="accountName">Nguyễn Văn A</strong></div>
+            <div class="info-item"><span>Email</span><strong id="accountEmail">clc@student.tdtu.edu.vn</strong></div>
+            <div class="info-item"><span>Số điện thoại</span><strong id="accountPhone">0901 234 567</strong></div>
+            <div class="info-item"><span>Khoa</span><strong id="accountFaculty">Công nghệ Thông tin</strong></div>
+            <div class="info-item"><span>Lớp</span><strong id="accountClass">22CTT1</strong></div>
+            <div class="info-item"><span>Hệ sinh viên</span><strong id="accountProgram">Sinh viên CLC</strong></div>
+            <div class="info-item"><span>Ngày tham gia</span><strong id="accountJoinDate">15/09/2023</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="account-card" id="recentActivityCard">
+        <h3>Hoạt động gần đây</h3>
+        <p class="card-desc">Hiển thị nhanh các hoạt động mới nhất của tài khoản.</p>
+        <div class="activity-feed" id="recentActivityList"></div>
+      </div>
+      <div class="account-card hidden" id="bookingHistoryCard">
+        <div class="card-heading-row">
+          <div>
+            <h3>Lịch sử đặt chỗ</h3>
+            <p class="card-desc">Danh sách chi tiết các lịch đặt phòng họp và khu học qua đêm.</p>
+          </div>
+          <select class="select history-filter" id="historyFilter">
+            <option value="all">Tất cả</option>
+            <option value="Confirmed">Sắp tới</option>
+            <option value="Cancelled">Đã hủy</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="history-table" id="historyTable"></table>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+<section id="login" class="page">
+  <div class="login-page-wrap">
+    <div class="login-card">
+      <div class="login-left">
+        <div class="brand">
+          <div class="logo">📖</div>
+          <div>
+            <div class="login-logo-text">LibSpace</div>
+            <div class="brand-subtitle">Smart Library Reservation</div>
+          </div>
+        </div>
+        <div class="login-illustration">🪴 💻 📚</div>
+      </div>
+      <div class="login-right">
+        <h1>Đăng nhập</h1>
+        <p>Đăng nhập vào hệ thống LibSpace</p>
+        <div class="login-field">
+          <label>Email sinh viên</label>
+          <div class="login-input">
+            <span>✉</span>
+            <input id="loginEmail" type="email" placeholder="Nhập email sinh viên">
+          </div>
+        </div>
+        <div class="login-field">
+          <label>Mật khẩu</label>
+          <div class="login-input">
+            <span>🔒</span>
+            <input id="loginPassword" type="password" placeholder="Nhập mật khẩu">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" id="doLogin">Đăng nhập</button>
+        <div class="login-note">ⓘ Sử dụng tài khoản sinh viên để đăng nhập. Form không tự điền sẵn để đúng logic đăng nhập thật.</div>
+        <div class="test-accounts">
+          <strong>Tài khoản test:</strong><br>
+          Hệ tiêu chuẩn: tc@student.tdtu.edu.vn / student1@tc<br>
+          Hệ CLC: clc@student.tdtu.edu.vn / student2@clc
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="brand">
+        <div class="logo">📖</div>
+        <div>
+          <div class="brand-title">Lib<span style="color:var(--primary)">Space</span></div>
+          <div class="brand-subtitle">Smart Library Reservation</div>
+        </div>
+      </div>
+      <p>LibSpace là hệ thống hỗ trợ đặt phòng họp và đăng ký khu học qua đêm trong thư viện mini, mang đến trải nghiệm tiện lợi và hiệu quả cho sinh viên.</p>
+    </div>
+    <div>
+      <strong>Liên hệ</strong>
+      <ul>
+        <li>✉ library@tdtu.edu.vn</li>
+        <li>☎ (028) 1234 5678</li>
+        <li>📍 Thư viện mini, TP.HCM</li>
+      </ul>
+    </div>
+  </div>
+  <div class="copyright">© 2026 LibSpace. All rights reserved.</div>
+</footer>
+<div class="confirm-modal hidden" id="cancelModal">
+  <div class="confirm-box">
+    <h3>Xác nhận hủy đặt chỗ</h3>
+    <p id="cancelMessage">Bạn có chắc muốn hủy lịch đặt này không?</p>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" id="closeCancelModal">Không hủy</button>
+      <button class="btn btn-primary" id="confirmCancelBooking">Xác nhận hủy</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  const users = {
+    'tc@student.tdtu.edu.vn': {
+      password: 'student1@tc',
+      name: 'Trần Minh Khang',
+      email: 'tc@student.tdtu.edu.vn',
+      phone: '0901 111 222',
+      faculty: 'Công nghệ Thông tin',
+      className: '22CTT1',
+      program: 'Sinh viên hệ tiêu chuẩn',
+      programType: 'standard',
+      joinDate: '15/09/2023',
+      avatar: ''
+    },
+    'clc@student.tdtu.edu.vn': {
+      password: 'student2@clc',
+      name: 'Nguyễn Lan Anh',
+      email: 'clc@student.tdtu.edu.vn',
+      phone: '0902 333 444',
+      faculty: 'Công nghệ Thông tin',
+      className: '22CLC1',
+      program: 'Sinh viên CLC',
+      programType: 'clc',
+      joinDate: '15/09/2023',
+      avatar: ''
+    }
+  };
+
+  const roomData = [
+    { id: 'R1', name: 'P. Họp 1', floor: 'Tầng 1', capacity: 6 },
+    { id: 'R2', name: 'P. Họp 2', floor: 'Tầng 1', capacity: 6 },
+    { id: 'R3', name: 'P. Họp 3', floor: 'Tầng 1', capacity: 6 },
+    { id: 'R4', name: 'P. Họp 4', floor: 'Tầng 1', capacity: 6 },
+    { id: 'R5', name: 'P. Họp 5', floor: 'Tầng 2', capacity: 6 },
+    { id: 'R6', name: 'P. Họp 6', floor: 'Tầng 2', capacity: 6 },
+    { id: 'R7', name: 'P. Họp 7', floor: 'Tầng 2', capacity: 6 },
+    { id: 'R8', name: 'P. Họp 8', floor: 'Tầng 2', capacity: 6 }
+  ];
+
+  const fixedRoomBookings = [
+    { roomId: 'R2', date: '2026-05-15', start: '09:00', end: '11:00' },
+    { roomId: 'R4', date: '2026-05-15', start: '10:00', end: '12:00' }
+  ];
+  
+  const fixedBookedSeats = ['A03', 'B02', 'B05', 'D01', 'D03'];
+
+  const floorImages = [
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop'
+  ];
+
+  const i18n = {
+    vi: {
+      nav: ['Trang chủ', 'Giới thiệu', 'Đặt Phòng'],
+      login: '👤 Đăng nhập',
+      needLogin: 'Vui lòng đăng nhập trước khi đặt phòng hoặc đặt chỗ.',
+      invalidLogin: 'Email hoặc mật khẩu không đúng.',
+      loginSuccess: 'Đăng nhập thành công.',
+      logoutSuccess: 'Đã đăng xuất khỏi hệ thống.',
+      available: 'Còn trống',
+      booked: 'Đã đặt',
+      selectRoom: 'Chọn phòng',
+      selected: 'Đã chọn',
+      unavailable: 'Không khả dụng',
+      bookingOk: b => `Đặt chỗ thành công: ${displayResource(b)}, ${displayBookingDate(b)}, ${b.time}.`,
+      cancelOk: b => `Đã hủy ${displayResource(b)} | ${displayBookingDate(b)} | ${b.time}. Thời gian hủy: ${displayCancelledAt(b)}.`,
+      summary: {
+        type: 'Loại',
+        booker: 'Người đặt',
+        email: 'Email',
+        room: 'Phòng',
+        floor: 'Tầng',
+        date: 'Ngày',
+        time: 'Giờ',
+        cap: 'Sức chứa',
+        seat: 'Chỗ ngồi',
+        unit: 'Đơn giá',
+        discount: 'Giảm giá sinh viên CLC (20%)',
+        total: 'Tổng tiền'
+      },
+      floors: [
+        ['Tầng 1', 'Khu học tự do & Phòng họp nhóm', [['Tổng số chỗ ngồi', '120 chỗ'], ['Khu học tự do', '96 chỗ'], ['Phòng họp nhóm', '4 phòng']]],
+        ['Tầng 2', 'Khu học tự do & Phòng họp nhóm', [['Tổng số chỗ ngồi', '100 chỗ'], ['Khu học tự do', '76 chỗ'], ['Phòng họp nhóm', '4 phòng']]],
+        ['Tầng 3', 'Khu học qua đêm & Kệ sách', [['Khu học qua đêm', '20 chỗ'], ['Giờ hoạt động', '22:00 - 06:00'], ['Hình thức sử dụng', 'Cần đăng ký trước']]]
+      ]
+    },
+    en: {
+      nav: ['Home', 'About', 'Booking'],
+      login: '👤 Login',
+      needLogin: 'Please log in before booking a room or seat.',
+      invalidLogin: 'Incorrect email or password.',
+      loginSuccess: 'Login successful.',
+      logoutSuccess: 'Logged out successfully.',
+      available: 'Available',
+      booked: 'Booked',
+      selectRoom: 'Select room',
+      selected: 'Selected',
+      unavailable: 'Unavailable',
+      bookingOk: b => `Booking successful: ${displayResource(b)}, ${displayBookingDate(b)}, ${b.time}.`,
+      cancelOk: b => `Cancelled ${displayResource(b)} | ${displayBookingDate(b)} | ${b.time}. Cancellation time: ${displayCancelledAt(b)}.`,
+      summary: {
+        type: 'Type',
+        booker: 'Booker',
+        email: 'Email',
+        room: 'Room',
+        floor: 'Floor',
+        date: 'Date',
+        time: 'Time',
+        cap: 'Capacity',
+        seat: 'Seat',
+        unit: 'Unit price',
+        discount: 'CLC student discount (20%)',
+        total: 'Total'
+      },
+      floors: [
+        ['Floor 1', 'Open Study Area & Group Study Rooms', [['Total seats', '120 seats'], ['Open study area', '96 seats'], ['Group study rooms', '4 rooms']]],
+        ['Floor 2', 'Open Study Area & Group Study Rooms', [['Total seats', '100 seats'], ['Open study area', '76 seats'], ['Group study rooms', '4 rooms']]],
+        ['Floor 3', 'Overnight Study Area & Bookshelves', [['Overnight study area', '20 seats'], ['Operating hours', '22:00 - 06:00'], ['Usage requirement', 'Registration required']]]
+      ]
+    }
+  };
+
+  const ui = {
+    vi: {
+      dropdownAccount: '👤 Thông tin tài khoản',
+      dropdownLogout: '🚪 Đăng xuất',
+      heroBadge: '✦ Chào mừng đến với LibSpace',
+      heroTitle: 'Không gian học tập <span class="gradient-text">thông minh</span> cho <span class="gradient-text">sinh viên</span>',
+      heroDesc: 'Đặt trước phòng học nhóm và chỗ học qua đêm tại thư viện một cách nhanh chóng, tiện lợi. Khu học tự do vẫn được sử dụng miễn phí khi đến trực tiếp thư viện.',
+      bookNow: 'Đặt phòng ngay →',
+      stats: ['Sinh viên sử dụng', 'Đánh giá', 'Lượt đặt thành công'],
+      spacesTitle: 'Không gian đa dạng, phù hợp mọi nhu cầu',
+      cards: [
+        ['Không gian học tự do', 'Không gian mở dành cho học cá nhân, đọc sách và làm bài. Sinh viên đến trực tiếp, không cần đặt lịch.'],
+        ['Phòng học nhóm', 'Không gian riêng để thảo luận và làm việc nhóm. Có 8 phòng ở tầng 1 và tầng 2, cần đặt lịch trước.'],
+        ['Khu học qua đêm', 'Hỗ trợ sinh viên học tập xuyên đêm tại tầng 3. Cần đăng ký chỗ trước theo ngày.']
+      ],
+      aboutBadge: 'GIỚI THIỆU VỀ CHÚNG TÔI',
+      about: [
+        'LibSpace là hệ thống đặt chỗ học tập trực tuyến lấy cảm hứng từ mô hình thư viện hiện đại của Trường Đại học Tôn Đức Thắng, giúp sinh viên dễ dàng tìm kiếm, đặt chỗ và quản lý lịch học tập một cách nhanh chóng, tiện lợi.',
+        'Hệ thống hỗ trợ nhiều không gian học tập như khu học tự do, phòng họp nhóm và khu học qua đêm, mang đến trải nghiệm học tập hiện đại và hiệu quả hơn.',
+        'Thư viện gồm 3 tầng: tầng 1 và tầng 2 có khu học tự do cùng phòng họp nhóm; tầng 3 dành cho khu học qua đêm cần đăng ký trước.'
+      ],
+      floorOverview: 'Tổng quan các tầng',
+      sideRoom: 'Phòng họp nhóm',
+      sideRoomDesc: 'Đặt phòng họp nhóm theo nhu cầu',
+      sideNight: 'Khu học qua đêm',
+      sideNightDesc: 'Đặt chỗ học qua đêm 22:00 - 06:00',
+      quickGuide: 'Hướng dẫn nhanh',
+      guide: ['Chọn ngày và thời gian', 'Xem phòng/chỗ còn trống', 'Chọn phòng hoặc chỗ ngồi', 'Xác nhận và đặt chỗ'],
+      roomTitle: 'Đặt phòng họp nhóm',
+      roomDesc: 'Chọn thời gian, hệ thống sẽ hiển thị các phòng còn trống cho bạn.',
+      nightTitle: 'Đặt chỗ học qua đêm',
+      nightDesc: 'Chọn ngày và chỗ ngồi để đặt chỗ học qua đêm tại tầng 3.',
+      stepDateTime: 'Chọn ngày và thời gian',
+      stepRoomList: 'Danh sách phòng còn trống',
+      stepDate: 'Chọn ngày',
+      stepSeat: 'Chọn chỗ ngồi',
+      maxSeat: '(Tối đa 1 chỗ / đêm)',
+      date: 'Ngày',
+      start: 'Giờ bắt đầu',
+      end: 'Giờ kết thúc',
+      fixedTime: 'Giờ hoạt động cố định',
+      fixedTimeValue: '22:00 - 06:00 hôm sau',
+      status: 'Trạng thái',
+      action: 'Thao tác',
+      people: 'người',
+      roomsAvailable: 'phòng khả dụng',
+      selectedSlot: 'Khung giờ đã chọn',
+      roomsAvailableText: 'phòng khả dụng cho khung giờ này',
+      legendFree: 'Còn trống',
+      legendBooked: 'Đã đặt',
+      legendSelected: 'Đang chọn',
+      selectedSeat: 'Bạn đã chọn:',
+      clearSeat: 'Xóa chọn',
+      noteTitle: 'ⓘ Lưu ý',
+      roomNotes: [
+        'Vui lòng đến trước giờ đặt 15 phút để chuẩn bị.',
+        'Phòng sẽ tự động bị hủy nếu sinh viên không đến quầy lễ tân thư viện để check-in trong vòng 30 phút kể từ thời gian bắt đầu đặt chỗ.',
+        'Khi đến thư viện, đọc email hoặc MSSV tại quầy lễ tân để nhân viên kiểm tra booking.'
+      ],
+      nightNotes: [
+        'Vui lòng giữ yên tĩnh và không làm ảnh hưởng đến người khác.',
+        'Chỗ ngồi sẽ tự động bị hủy nếu sinh viên không check-in tại quầy lễ tân trong vòng 30 phút kể từ giờ bắt đầu.',
+        'Rời khỏi thư viện trước 06:00 sáng hôm sau.'
+      ],
+      summaryTitle: 'Thông tin đặt chỗ',
+      payment: 'Thanh toán: Tiền mặt tại quầy lễ tân của thư viện',
+      submit: '📅 Đặt chỗ ngay',
+      hint: 'Sau khi đặt chỗ thành công, bạn có thể xem lịch sử trong mục Thông tin tài khoản.',
+      accountInfo: '👤 Thông tin tài khoản',
+      history: '📅 Lịch sử đặt chỗ',
+      logout: '🚪 Đăng xuất',
+      accountHeading: 'Thông tin tài khoản',
+      accountDesc: 'Quản lý thông tin cá nhân và lịch sử đặt chỗ.',
+      personal: 'Thông tin cá nhân',
+      edit: '✎ Chỉnh sửa',
+      labels: ['Họ và tên', 'Email', 'Số điện thoại', 'Khoa', 'Lớp', 'Hệ sinh viên', 'Ngày tham gia'],
+      recent: 'Hoạt động gần đây',
+      recentDesc: 'Hiển thị nhanh các hoạt động mới nhất của tài khoản.',
+      historyTitle: 'Lịch sử đặt chỗ',
+      historyDesc: 'Danh sách chi tiết các lịch đặt phòng họp và khu học qua đêm.',
+      filterAll: 'Tất cả',
+      filterUpcoming: 'Sắp tới',
+      filterCancelled: 'Đã hủy',
+      loginTitle: 'Đăng nhập',
+      loginDesc: 'Đăng nhập vào hệ thống LibSpace',
+      studentEmail: 'Email sinh viên',
+      emailPlaceholder: 'Nhập email sinh viên',
+      password: 'Mật khẩu',
+      passwordPlaceholder: 'Nhập mật khẩu',
+      loginNote: 'ⓘ Sử dụng tài khoản sinh viên để đăng nhập. Form không tự điền sẵn để đúng logic đăng nhập thật.',
+      testAccounts: 'Tài khoản test:',
+      standardAcc: 'Hệ tiêu chuẩn: tc@student.tdtu.edu.vn / student1@tc',
+      clcAcc: 'Hệ CLC: clc@student.tdtu.edu.vn / student2@clc',
+      footerDesc: 'LibSpace là hệ thống hỗ trợ đặt phòng họp và đăng ký khu học qua đêm trong thư viện mini, mang đến trải nghiệm tiện lợi và hiệu quả cho sinh viên.',
+      contact: 'Liên hệ',
+      cancelTitle: 'Xác nhận hủy đặt chỗ',
+      cancelDefault: 'Bạn có chắc muốn hủy lịch đặt này không?',
+      cancelNo: 'Không hủy',
+      cancelConfirm: 'Xác nhận hủy',
+      cancelQuestion: b => `Bạn có chắc muốn hủy ${b.resource} vào ${displayBookingDate(b)}, khung giờ ${b.time} không?`,
+      profileModalTitle: 'Chỉnh sửa thông tin cá nhân',
+      profileModalDesc: 'Cập nhật thông tin hiển thị trên tài khoản LibSpace.',
+      changeAvatar: 'Đổi ảnh đại diện',
+      save: 'Lưu thay đổi',
+      cancel: 'Hủy',
+      profileSaved: 'Cập nhật thông tin cá nhân thành công.',
+      noActivity: 'Chưa có hoạt động nào.',
+      bookingCancelled: 'Đã hủy đặt chỗ',
+      bookingSuccess: 'Đặt chỗ thành công',
+      cancelledAt: 'Hủy lúc',
+      noBookings: 'Chưa có lịch đặt chỗ.',
+      type: 'Loại',
+      roomSeat: 'Phòng/Chỗ',
+      confirmed: 'Đã xác nhận',
+      cancelled: 'Đã hủy',
+      cancelBooking: 'Hủy đặt chỗ',
+      groupRoom: 'Phòng họp nhóm',
+      overnightSeat: 'Khu học qua đêm'
+    },
+    en: {
+      dropdownAccount: '👤 Account Information',
+      dropdownLogout: '🚪 Logout',
+      heroBadge: '✦ Welcome to LibSpace',
+      heroTitle: 'Smart learning space for students',
+      heroDesc: 'Reserve group study rooms and overnight study seats quickly and conveniently. The open study area remains free for walk-in students.',
+      bookNow: 'Book now →',
+      stats: ['Students using', 'Rating', 'Successful bookings'],
+      spacesTitle: 'Flexible study spaces for every need',
+      cards: [
+        ['Open Study Area', 'An open space for individual study, reading, and assignments. Students can come directly without booking.'],
+        ['Group Study Room', 'Private rooms for discussion and teamwork. There are 8 rooms on floors 1 and 2, and booking is required.'],
+        ['Overnight Study Area', 'Supports overnight studying on floor 3. Students need to register a seat by date in advance.']
+      ],
+      aboutBadge: 'ABOUT US',
+      about: [
+        'LibSpace is an online study-space reservation system inspired by the modern library model of Ton Duc Thang University, helping students search, book, and manage study schedules quickly and conveniently.',
+        'The system supports multiple learning spaces such as open study areas, group study rooms, and overnight study areas, creating a modern and effective study experience.',
+        'The library has 3 floors: floors 1 and 2 include open study areas and group study rooms; floor 3 is for overnight study and requires registration in advance.'
+      ],
+      floorOverview: 'Floor Overview',
+      sideRoom: 'Group Study Room',
+      sideRoomDesc: 'Book a group study room as needed',
+      sideNight: 'Overnight Study Area',
+      sideNightDesc: 'Book overnight study 22:00 - 06:00',
+      quickGuide: 'Quick guide',
+      guide: ['Choose date and time', 'Check available rooms/seats', 'Select a room or seat', 'Confirm and book'],
+      roomTitle: 'Book a Group Study Room',
+      roomDesc: 'Choose a time slot and the system will show available rooms.',
+      nightTitle: 'Book an Overnight Study Seat',
+      nightDesc: 'Choose a date and seat to book overnight study on floor 3.',
+      stepDateTime: 'Choose date and time',
+      stepRoomList: 'Available room list',
+      stepDate: 'Choose date',
+      stepSeat: 'Choose seat',
+      maxSeat: '(Maximum 1 seat / night)',
+      date: 'Date',
+      start: 'Start time',
+      end: 'End time',
+      fixedTime: 'Fixed operating hours',
+      fixedTimeValue: '22:00 - 06:00 next day',
+      status: 'Status',
+      action: 'Action',
+      people: 'people',
+      roomsAvailable: 'rooms available',
+      selectedSlot: 'Selected time slot',
+      roomsAvailableText: 'rooms are available for this time slot',
+      legendFree: 'Available',
+      legendBooked: 'Booked',
+      legendSelected: 'Selected',
+      selectedSeat: 'Selected seat:',
+      clearSeat: 'Clear selection',
+      noteTitle: 'ⓘ Notes',
+      roomNotes: [
+        'Please arrive 15 minutes before your booking time.',
+        'The room will be automatically cancelled if the student does not check in at the library reception desk within 30 minutes from the booking start time.',
+        'When arriving at the library, provide your email or student ID at the reception desk for staff verification.'
+      ],
+      nightNotes: [
+        'Please keep quiet and do not disturb others.',
+        'The seat will be automatically cancelled if the student does not check in at the reception desk within 30 minutes from the start time.',
+        'When arriving at the library, provide your email or student ID at the reception desk for staff verification..'
+      ],
+      summaryTitle: 'Booking Information',
+      payment: '💳 Payment: Cash at library',
+      submit: '📅 Book now',
+      hint: 'After booking successfully, you can view your booking history in Account Information.',
+      accountInfo: '👤 Account Information',
+      history: '📅 Booking History',
+      logout: '🚪 Logout',
+      accountHeading: 'Account Information',
+      accountDesc: 'Manage personal information and booking history.',
+      personal: 'Personal information',
+      edit: '✎ Edit',
+      labels: ['Full name', 'Email', 'Phone number', 'Faculty', 'Class', 'Student program', 'Join date'],
+      recent: 'Recent Activity',
+      recentDesc: 'Quickly view the latest account activities.',
+      historyTitle: 'Booking History',
+      historyDesc: 'Detailed list of group room and overnight study bookings.',
+      filterAll: 'All',
+      filterUpcoming: 'Upcoming',
+      filterCancelled: 'Cancelled',
+      loginTitle: 'Login',
+      loginDesc: 'Log in to the LibSpace system',
+      studentEmail: 'Student email',
+      emailPlaceholder: 'Enter student email',
+      password: 'Password',
+      passwordPlaceholder: 'Enter password',
+      loginNote: 'ⓘ Use your student account to log in. The form is intentionally left blank for realistic login behavior.',
+      testAccounts: 'Test accounts:',
+      standardAcc: 'Standard program: tc@student.tdtu.edu.vn / student1@tc',
+      clcAcc: 'CLC program: clc@student.tdtu.edu.vn / student2@clc',
+      footerDesc: 'LibSpace supports group-room booking and overnight study registration in a mini library, creating a convenient and effective experience for students.',
+      contact: 'Contact',
+      cancelTitle: 'Confirm booking cancellation',
+      cancelDefault: 'Are you sure you want to cancel this booking?',
+      cancelNo: 'Keep booking',
+      cancelConfirm: 'Confirm cancellation',
+      cancelQuestion: b => `Are you sure you want to cancel ${b.resource} on ${displayBookingDate(b)}, time slot ${b.time}?`,
+      profileModalTitle: 'Edit personal information',
+      profileModalDesc: 'Update the information displayed on your LibSpace account.',
+      changeAvatar: 'Change avatar',
+      save: 'Save changes',
+      cancel: 'Cancel',
+      profileSaved: 'Personal information updated successfully.',
+      noActivity: 'No activity yet.',
+      bookingCancelled: 'Booking cancelled',
+      bookingSuccess: 'Booking successful',
+      cancelledAt: 'Cancelled at',
+      noBookings: 'No bookings found.',
+      type: 'Type',
+      roomSeat: 'Room/Seat',
+      confirmed: 'Confirmed',
+      cancelled: 'Cancelled',
+      cancelBooking: 'Cancel booking',
+      groupRoom: 'Group room',
+      overnightSeat: 'Overnight seat'
+    }
+  };
+
+  function u() {
+    return ui[state.language];
+  }
+
+  let state = {
+    page: 'home',
+    bookingType: 'room',
+    selectedRoom: null,
+    selectedSeat: 'C03',
+    language: localStorage.getItem('libspaceLang') || 'vi',
+    currentUserEmail: localStorage.getItem('libspaceCurrentUser') || '',
+    bookings: JSON.parse(localStorage.getItem('libspaceBookings') || '[]'),
+    cancelTargetId: null,
+    currentFloorIndex: 0,
+    floorAutoTimer: null
+  };
+
+  function t() {
+    return i18n[state.language];
+  }
+
+  function currentUser() {
+    if (!state.currentUserEmail) return null;
+    return JSON.parse(localStorage.getItem('profile_' + state.currentUserEmail) || 'null') || users[state.currentUserEmail] || null;
+  }
+
+  function saveCurrentUser(p) {
+    localStorage.setItem('profile_' + p.email, JSON.stringify(p));
+  }
+
+  function isLoggedIn() {
+    return !!currentUser();
+  }
+
+  function showToast(msg) {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3200);
+  }
+
+  function formatMoney(n) {
+    return n.toLocaleString('vi-VN') + ' VNĐ';
+  }
+
+  function formatDate(v) {
+    if (!v) return '-';
+    return new Date(v + 'T00:00:00').toLocaleDateString(state.language === 'en' ? 'en-US' : 'vi-VN', {
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  function formatNow() {
+    return new Date().toLocaleString(state.language === 'en' ? 'en-US' : 'vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  function toMinutes(time) {
+    const [h, m] = time.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function isOverlap(a, b, c, d) {
+    return toMinutes(a) < toMinutes(d) && toMinutes(b) > toMinutes(c);
+  }
+
+  function avatarHTML(p, size = 'small') {
+    if (p && p.avatar) return `<img src="${p.avatar}" alt="Avatar">`;
+    return p ? p.name.split(' ').map(x => x[0]).slice(-2).join('').toUpperCase() : 'NA';
+  }
+
+  function programText(p) {
+    if (!p) return '';
+    if (state.language === 'en') return p.programType === 'clc' ? 'CLC student' : 'Standard program student';
+    return p.programType === 'clc' ? 'Sinh viên CLC' : 'Sinh viên hệ tiêu chuẩn';
+  }
+
+  function updateAuthUI() {
+    const p = currentUser();
+    $('#loginButton').classList.toggle('hidden', !!p);
+    $('#accountButton').classList.toggle('hidden', !p);
+    if (p) {
+      $('#navAvatar').innerHTML = avatarHTML(p);
+      $('#dropdownAvatar').innerHTML = avatarHTML(p);
+      $('#navUserName').textContent = p.name;
+      $('#dropdownName').textContent = p.name;
+      $('#dropdownProgram').textContent = programText(p);
+    }
+  }
+
+  function navigate(page) {
+    if (page === 'booking' && !isLoggedIn()) {
+      showToast(t().needLogin);
+      page = 'login';
+    }
+    if (page === 'account' && !isLoggedIn()) page = 'login';
+    state.page = page;
+    $$('.page').forEach(p => p.classList.remove('active'));
+    $('#' + page)?.classList.add('active');
+    $$('.nav-link').forEach(btn => btn.classList.toggle('active', btn.dataset.page === page));
+    $('#accountDropdown').classList.add('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderAll();
+  }
+
+  function setupTimeOptions() {
+    const start = $('#startTime'), end = $('#endTime');
+    const times = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+    start.innerHTML = times.slice(0, -1).map(x => `<option value="${x}">${x}</option>`).join('');
+    end.innerHTML = times.slice(1).map(x => `<option value="${x}">${x}</option>`).join('');
+    start.value = '09:00';
+    end.value = '11:00';
+  }
+
+  function roomAvailable(room) {
+    const date = $('#roomDate').value, start = $('#startTime').value, end = $('#endTime').value;
+    if (!date || !start || !end || toMinutes(start) >= toMinutes(end)) return false;
+    const saved = state.bookings.filter(b => b.type === 'room' && b.status !== 'Cancelled').map(b => ({
+      roomId: b.resourceId,
+      date: b.dateValue,
+      start: b.start,
+      end: b.end
+    }));
+    return ![...fixedRoomBookings, ...saved].some(b => b.roomId === room.id && b.date === date && isOverlap(start, end, b.start, b.end));
+  }
+
+  function renderRoomTable() {
+    let count = 0;
+    let html = `<thead><tr><th>${t().summary.room}</th><th>${t().summary.cap}</th><th>${u().status}</th><th>${u().action}</th></tr></thead><tbody>`;
+    ['Tầng 1', 'Tầng 2'].forEach((floor, idx) => {
+      const rooms = roomData.filter(r => r.floor === floor);
+      const floorCount = rooms.filter(roomAvailable).length;
+      count += floorCount;
+      html += `<tr class="floor-row"><td colspan="4">${state.language === 'en' ? 'Floor' : 'Tầng'} ${idx + 1}<span style="float:right">${floorCount}/4 ${u().roomsAvailable}</span></td></tr>`;
+      rooms.forEach(room => {
+        const ok = roomAvailable(room), sel = state.selectedRoom?.id === room.id;
+        html += `<tr><td><strong>${state.language === 'en' ? room.name.replace('P. Họp', 'Room') : room.name}</strong></td><td>6 ${u().people}</td><td><span class="status"><i class="dot-small ${ok ? 'green' : 'gray'}"></i>${ok ? t().available : t().booked}</span></td><td><button class="room-action ${sel ? 'selected' : ''}" ${ok ? '' : 'disabled'} data-room-id="${room.id}">${sel ? t().selected : ok ? t().selectRoom : t().unavailable}</button></td></tr>`;
+      });
+    });
+    $('#roomTable').innerHTML = html + '</tbody>';
+    $('#roomAvailabilityText').innerHTML = `✅ ${u().selectedSlot}: <strong>${$('#startTime').value} - ${$('#endTime').value}</strong> | ${formatDate($('#roomDate').value)}<br><strong>${count}/8</strong> ${u().roomsAvailableText}`;
+    $$('[data-room-id]').forEach(btn => btn.onclick = () => {
+      state.selectedRoom = roomData.find(r => r.id === btn.dataset.roomId);
+      renderRoomTable();
+      renderSummary();
+    });
+  }
+
+  function renderSeats() {
+    let html = '<div></div>' + [1, 2, 3, 4, 5].map(i => `<div class="seat-label">0${i}</div>`).join('');
+    ['A', 'B', 'C', 'D'].forEach(row => {
+      html += `<div class="seat-label">${row}</div>`;
+      for (let i = 1; i <= 5; i++) {
+        const code = `${row}0${i}`;
+        const booked = fixedBookedSeats.includes(code) || state.bookings.some(b => b.type === 'overnight' && b.status !== 'Cancelled' && b.dateValue === $('#nightDate').value && b.resourceId === code);
+        const sel = state.selectedSeat === code;
+        html += `<button class="seat-btn ${booked ? 'booked' : ''} ${sel ? 'selected' : ''}" ${booked ? 'disabled' : ''} data-seat="${code}">${code}</button>`;
+      }
+    });
+    $('#seatGrid').innerHTML = html;
+    $$('.seat-btn[data-seat]').forEach(btn => btn.onclick = () => {
+      state.selectedSeat = btn.dataset.seat;
+      renderSeats();
+      renderSummary();
+    });
+    $('#selectedSeatTag').textContent = state.selectedSeat || (state.language === 'en' ? 'Not selected' : 'Chưa chọn');
+  }
+
+  function setBookingType(type) {
+    state.bookingType = type;
+    $$('.side-option').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+    $('#roomBooking').style.display = type === 'room' ? 'block' : 'none';
+    $('#overnightBooking').style.display = type === 'overnight' ? 'block' : 'none';
+    renderSummary();
+    renderRoomTable();
+    renderSeats();
+  }
+
+  function calculatePrice() {
+    const p = currentUser();
+    const unit = 20000;
+    const isClc = p?.programType === 'clc';
+    const discount = isClc ? unit * 0.2 : 0;
+    return { unit, discount, total: unit - discount, isClc };
+  }
+
+  function renderSummary() {
+    const p = currentUser();
+    const box = $('#summaryRows');
+    const price = $('#priceRows');
+    const tr = k => t().summary[k];
+    if (!p) {
+      box.innerHTML = `<div class="summary-row"><span>${tr('booker')}</span><strong>-</strong></div>`;
+      price.innerHTML = '';
+      return;
+    }
+    if (state.bookingType === 'room') {
+      const room = state.selectedRoom;
+      box.innerHTML = `<div class="summary-row"><span>${tr('type')}</span><strong>${state.language === 'en' ? 'Group Study Room' : 'Phòng họp nhóm'}</strong></div><div class="summary-row"><span>${tr('booker')}</span><strong>${p.name}</strong></div><div class="summary-row"><span>${tr('email')}</span><strong>${p.email}</strong></div><div class="summary-row"><span>${tr('room')}</span><strong>${room ? (state.language === 'en' ? room.name.replace('P. Họp', 'Room') : room.name) : '-'}</strong></div><div class="summary-row"><span>${tr('floor')}</span><strong>${room ? (state.language === 'en' ? room.floor.replace('Tầng', 'Floor') : room.floor) : '-'}</strong></div><div class="summary-row"><span>${tr('date')}</span><strong>${formatDate($('#roomDate').value)}</strong></div><div class="summary-row"><span>${tr('time')}</span><strong>${$('#startTime').value} - ${$('#endTime').value}</strong></div><div class="summary-row"><span>${tr('cap')}</span><strong>${room ? '6 ' + (state.language === 'en' ? 'people' : 'người') : '-'}</strong></div>`;
+    } else {
+      box.innerHTML = `<div class="summary-row"><span>${tr('type')}</span><strong>${state.language === 'en' ? 'Overnight Study Area' : 'Khu học qua đêm'}</strong></div><div class="summary-row"><span>${tr('booker')}</span><strong>${p.name}</strong></div><div class="summary-row"><span>${tr('email')}</span><strong>${p.email}</strong></div><div class="summary-row"><span>${tr('floor')}</span><strong>${state.language === 'en' ? 'Floor 3' : 'Tầng 3'}</strong></div><div class="summary-row"><span>${tr('date')}</span><strong>${formatDate($('#nightDate').value)}</strong></div><div class="summary-row"><span>${tr('time')}</span><strong>22:00 - 06:00</strong></div><div class="summary-row"><span>${tr('seat')}</span><strong>${state.selectedSeat || '-'}</strong></div>`;
+    }
+    const m = calculatePrice();
+    price.innerHTML = `<div class="summary-row"><span>${tr('unit')}</span><strong>${formatMoney(m.unit)}</strong></div>${m.isClc ? `<div class="summary-row"><span>${tr('discount')}</span><strong class="discount">-${formatMoney(m.discount)}</strong></div>` : ''}<div class="summary-row"><span>${tr('total')}</span><strong class="total">${formatMoney(m.total)}</strong></div>`;
+  }
+
+  async function createBooking() {
+    const p = currentUser();
+    if (!p) {
+      showToast(t().needLogin);
+      navigate('login');
+      return;
+    }
+    let b;
+    if (state.bookingType === 'room') {
+      if (!state.selectedRoom) {
+        showToast(state.language === 'en' ? 'Please select a room.' : 'Vui lòng chọn phòng.');
+        return;
+      }
+      if (!$('#roomDate').value) {
+        showToast(state.language === 'en' ? 'Please select a date.' : 'Vui lòng chọn ngày.');
+        return;
+      }
+      if (!$('#startTime').value || !$('#endTime').value) {
+        showToast(state.language === 'en' ? 'Please select a time.' : 'Vui lòng chọn giờ.');
+        return;
+      }
+      b = {
+        id: Date.now(),
+        type: 'room',
+        typeName: 'Phòng họp nhóm',
+        studentName: p.name,
+        email: p.email,
+        programType: p.programType,
+        resource: `${state.selectedRoom.name} - ${state.selectedRoom.floor}`,
+        resourceId: state.selectedRoom.id,
+        date: formatDate($('#roomDate').value),
+        dateValue: $('#roomDate').value,
+        start: $('#startTime').value,
+        end: $('#endTime').value,
+        time: `${$('#startTime').value} - ${$('#endTime').value}`,
+        status: 'Confirmed',
+        createdAt: formatNow(),
+        ...calculatePrice()
+      };
+    } else {
+      if (!state.selectedSeat) {
+        showToast(state.language === 'en' ? 'Please select a seat.' : 'Vui lòng chọn chỗ ngồi.');
+        return;
+      }
+      if (!$('#nightDate').value) {
+        showToast(state.language === 'en' ? 'Please select a date.' : 'Vui lòng chọn ngày.');
+        return;
+      }
+      b = {
+        id: Date.now(),
+        type: 'overnight',
+        typeName: 'Khu học qua đêm',
+        studentName: p.name,
+        email: p.email,
+        programType: p.programType,
+        resource: `${state.selectedSeat} - Tầng 3`,
+        resourceId: state.selectedSeat,
+        date: formatDate($('#nightDate').value),
+        dateValue: $('#nightDate').value,
+        start: '22:00',
+        end: '06:00',
+        time: '22:00 - 06:00',
+        status: 'Confirmed',
+        createdAt: formatNow(),
+        ...calculatePrice()
+      };
+    }
+    try {
+      const response = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(b)
+      });
+      if (response.ok) {
+        state.bookings.unshift(b);
+        saveBookings();
+        showToast(t().bookingOk(b));
+        renderAll();
+        showAccountTab('history');
+      } else if (response.status === 409) {
+        showToast(state.language === 'en' ? 'This time slot is already booked!' : 'Khung giờ này đã được đặt rồi!');
+      } else {
+        showToast(state.language === 'en' ? 'Booking failed. Please try again.' : 'Lỗi khi đặt phòng!');
+      }
+    } catch (err) {
+      showToast('Lỗi khi đặt phòng!');
+    }
+  }
+
+  function saveBookings() {
+    localStorage.setItem('libspaceBookings', JSON.stringify(state.bookings));
+  }
+
+  function userBookings() {
+    const p = currentUser();
+    return p ? state.bookings.filter(b => b.email === p.email) : [];
+  }
+
+  function displayResource(b) {
+    return state.language === 'en' ? b.resource.replaceAll('P. Họp', 'Room').replaceAll('Tầng', 'Floor').replace('Khu học qua đêm', 'Overnight Study Area') : b.resource;
+  }
+
+  function displayBookingDate(b) {
+    return b.dateValue ? formatDate(b.dateValue) : b.date;
+  }
+
+  function displayBookingTime(b) {
+    return b.time;
+  }
+
+  function displayCancelledAt(b) {
+    return b.cancelledAtValue ? new Date(b.cancelledAtValue).toLocaleString(state.language === 'en' ? 'en-US' : 'vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) : b.cancelledAt;
+  }
+
+  function renderHistory() {
+    const list = userBookings();
+    $('#recentActivityList').innerHTML = list.slice(0, 5).map(b => `<div class="activity-item"><div class="activity-icon">${b.status === 'Cancelled' ? '✕' : '✓'}</div><div class="activity-content"><strong>${b.status === 'Cancelled' ? u().bookingCancelled : u().bookingSuccess}</strong><span>${displayResource(b)}</span>${b.cancelledAt ? `<span class="cancelled-text">${u().cancelledAt}: ${displayCancelledAt(b)}</span>` : ''}</div><div class="activity-time">${displayBookingDate(b)}<br>${displayBookingTime(b)}</div></div>`).join('') || `<p class="card-desc">${u().noActivity}</p>`;
+    const filter = $('#historyFilter').value || 'all';
+    const rows = list.filter(b => filter === 'all' || b.status === filter);
+    $('#historyTable').innerHTML = `<thead><tr><th>${u().type}</th><th>${u().roomSeat}</th><th>${t().summary.date}</th><th>${t().summary.time}</th><th>${t().summary.total}</th><th>${u().status}</th><th>${u().action}</th></tr></thead><tbody>${rows.map(b => `<tr><td>${state.language === 'en' ? (b.type === 'room' ? u().groupRoom : u().overnightSeat) : b.typeName}</td><td>${displayResource(b)}</td><td>${displayBookingDate(b)}</td><td>${displayBookingTime(b)}</td><td>${formatMoney(b.total)}</td><td>${b.status === 'Cancelled' ? u().cancelled : u().confirmed}${b.cancelledAt ? `<span class="cancelled-text">${u().cancelledAt}: ${displayCancelledAt(b)}</span>` : ''}</td><td>${b.status === 'Cancelled' ? `<button class="cancel-action" disabled>${u().cancelled}</button>` : `<button class="cancel-action" data-cancel-id="${b.id}">${u().cancelBooking}</button>`}</td></tr>`).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">${u().noBookings}</td></tr>`}</tbody>`;
+    $$('[data-cancel-id]').forEach(btn => btn.onclick = () => openCancelModal(Number(btn.dataset.cancelId)));
+  }
+
+  function openCancelModal(id) {
+    const b = state.bookings.find(x => x.id === id);
+    if (!b) return;
+    state.cancelTargetId = id;
+    $('#cancelMessage').textContent = u().cancelQuestion(b);
+    $('#cancelModal').classList.remove('hidden');
+  }
+
+  function confirmCancel() {
+    const b = state.bookings.find(x => x.id === state.cancelTargetId);
+    if (!b) return;
+    b.status = 'Cancelled';
+    b.cancelledAt = formatNow();
+    b.cancelledAtValue = new Date().toISOString();
+    saveBookings();
+    $('#cancelModal').classList.add('hidden');
+    showToast(t().cancelOk(b));
+    renderAll();
+  }
+
+  function showAccountTab(tab) {
+    if (!isLoggedIn()) {
+      navigate('login');
+      return;
+    }
+    const isHistory = tab === 'history';
+    $('#profileInfoCard').classList.toggle('hidden', isHistory);
+    $('#recentActivityCard').classList.toggle('hidden', isHistory);
+    $('#bookingHistoryCard').classList.toggle('hidden', !isHistory);
+    $('#profileMenuBtn').classList.toggle('active', !isHistory);
+    $('#historyMenuBtn').classList.toggle('active', isHistory);
+    $('#accountHeading').textContent = isHistory ? u().historyTitle : u().accountHeading;
+    $('#account .page-desc').textContent = isHistory ? u().historyDesc : u().accountDesc;
+    renderHistory();
+  }
+
+  function renderFloorSlide() {
+    const f = t().floors[state.currentFloorIndex];
+    $('#floorName').textContent = f[0];
+    $('#floorSubtitle').textContent = f[1];
+    $('#floorPreviewImage').src = floorImages[state.currentFloorIndex];
+    $('#floorDetailList').innerHTML = f[2].map(([a, b]) => `<div class="floor-detail-item"><span>${a}</span><strong>${b}</strong></div>`).join('');
+    $$('.floor-dots .dot').forEach((d, i) => d.classList.toggle('active', i === state.currentFloorIndex));
+  }
+
+  function renderProfile() {
+    const p = currentUser();
+    if (!p) return;
+    ['#navAvatar', '#dropdownAvatar', '#sideAvatar', '#profileAvatar'].forEach(sel => $(sel).innerHTML = avatarHTML(p));
+    $('#navUserName').textContent = p.name;
+    $('#dropdownName').textContent = p.name;
+    $('#dropdownProgram').textContent = programText(p);
+    $('#profileName').textContent = p.name;
+    $('#profileEmail').textContent = p.email;
+    $('#accountName').textContent = p.name;
+    $('#accountEmail').textContent = p.email;
+    $('#accountPhone').textContent = p.phone;
+    $('#accountFaculty').textContent = state.language === 'en' && p.faculty === 'Công nghệ Thông tin' ? 'Information Technology' : p.faculty;
+    $('#accountClass').textContent = p.className;
+    $('#accountProgram').textContent = programText(p);
+    $('#accountJoinDate').textContent = p.joinDate;
+  }
+
+  function openProfileEditor() {
+    const p = currentUser();
+    if (!p) return;
+    const modal = document.createElement('div');
+    modal.className = 'profile-modal-overlay';
+    modal.innerHTML = `<div class="profile-modal"><button class="profile-modal-close">×</button><h2>${u().profileModalTitle}</h2><p>${u().profileModalDesc}</p><div class="avatar-edit-box"><div class="avatar-preview">${avatarHTML(p)}</div><label class="avatar-upload-btn">${u().changeAvatar}<input id="avatarInput" type="file" accept="image/*" hidden></label></div><div class="profile-edit-grid"><label>${u().labels[0]}<input id="editName" value="${p.name}"></label><label>${u().labels[1]}<input value="${p.email}" disabled></label><label>${u().labels[2]}<input id="editPhone" value="${p.phone}"></label><label>${u().labels[3]}<input id="editFaculty" value="${p.faculty}"></label><label>${u().labels[4]}<input id="editClass" value="${p.className}"></label><label>${u().labels[5]}<input value="${programText(p)}" disabled></label></div><div class="profile-modal-actions"><button class="cancel-profile-edit">${u().cancel}</button><button class="save-profile-edit">${u().save}</button></div></div>`;
+    document.body.appendChild(modal);
+    let newAvatar = p.avatar;
+    modal.querySelector('#avatarInput').onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        newAvatar = ev.target.result;
+        modal.querySelector('.avatar-preview').innerHTML = `<img src="${newAvatar}" alt="Avatar">`;
+      };
+      reader.readAsDataURL(file);
+    };
+    const close = () => modal.remove();
+    modal.querySelector('.profile-modal-close').onclick = close;
+    modal.querySelector('.cancel-profile-edit').onclick = close;
+    modal.querySelector('.save-profile-edit').onclick = () => {
+      p.name = $('#editName').value.trim() || p.name;
+      p.phone = $('#editPhone').value.trim() || p.phone;
+      p.faculty = $('#editFaculty').value.trim() || p.faculty;
+      p.className = $('#editClass').value.trim() || p.className;
+      p.avatar = newAvatar;
+      saveCurrentUser(p);
+      renderAll();
+      close();
+      showToast(u().profileSaved);
+    };
+  }
+
+  function setTxt(sel, val) {
+    const el = $(sel);
+    if (el) el.textContent = val;
+  }
+
+  function setHTML(sel, val) {
+    const el = $(sel);
+    if (el) el.innerHTML = val;
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = state.language;
+    $('#currentLang').textContent = state.language.toUpperCase();
+    $$('.nav-link').forEach((btn, i) => btn.textContent = t().nav[i]);
+    $('#loginButton').textContent = t().login;
+    setTxt('#openAccountFromDropdown', u().dropdownAccount);
+    setTxt('#logoutFromDropdown', u().dropdownLogout);
+    setTxt('#home .eyebrow', u().heroBadge);
+    setHTML('#home .hero h1', u().heroTitle);
+    setTxt('#home .hero p', u().heroDesc);
+    setTxt('#home .hero .btn-primary', u().bookNow);
+    $$('#home .stat span').forEach((el, i) => el.textContent = u().stats[i]);
+    setTxt('#home .section-title', u().spacesTitle);
+    $$('#home .space-card').forEach((card, i) => {
+      const data = u().cards[i];
+      if (data) {
+        card.querySelector('h3').textContent = data[0];
+        card.querySelector('p').textContent = data[1];
+      }
+    });
+    setTxt('#about .section-badge', u().aboutBadge);
+    $$('#about .about-left p').forEach((p, i) => p.textContent = u().about[i]);
+    setTxt('#about .floor-title-wrap h2', u().floorOverview);
+    renderFloorSlide();
+    const side = $$('.side-option');
+    if (side[0]) side[0].innerHTML = `<span>${u().sideRoom}</span><small>${u().sideRoomDesc}</small>`;
+    if (side[1]) side[1].innerHTML = `<span>${u().sideNight}</span><small>${u().sideNightDesc}</small>`;
+    setTxt('.quick-guide strong', u().quickGuide);
+    $$('.guide-item').forEach((g, i) => {
+      const n = g.querySelector('.guide-number')?.outerHTML || `<span class="guide-number">${i + 1}</span>`;
+      g.innerHTML = `${n}<span>${u().guide[i]}</span>`;
+    });
+    setTxt('#roomBooking .page-heading', u().roomTitle);
+    setTxt('#roomBooking .page-desc', u().roomDesc);
+    setTxt('#overnightBooking .page-heading', u().nightTitle);
+    setTxt('#overnightBooking .page-desc', u().nightDesc);
+    const st = $$('.step-title');
+    if (st[0]) st[0].innerHTML = `<span class="step-number">1</span> ${u().stepDateTime}`;
+    if (st[1]) st[1].innerHTML = `<span class="step-number">2</span> ${u().stepRoomList}`;
+    if (st[2]) st[2].innerHTML = `<span class="step-number">1</span> ${u().stepDate}`;
+    if (st[3]) st[3].innerHTML = `<span class="step-number">2</span> ${u().stepSeat} <span style="color:var(--muted);font-weight:600">${u().maxSeat}</span>`;
+    const roomLabels = $$('#roomBooking label');
+    if (roomLabels[0]) roomLabels[0].textContent = u().date;
+    if (roomLabels[1]) roomLabels[1].textContent = u().start;
+    if (roomLabels[2]) roomLabels[2].textContent = u().end;
+    const nightLabels = $$('#overnightBooking label');
+    if (nightLabels[0]) nightLabels[0].textContent = u().date;
+    if (nightLabels[1]) nightLabels[1].textContent = u().fixedTime;
+    const fixed = $('#overnightBooking input[disabled]');
+    if (fixed) fixed.value = u().fixedTimeValue;
+    const legends = $$('.seat-legend .legend-item');
+    if (legends[0]) legends[0].lastChild.textContent = u().legendFree;
+    if (legends[1]) legends[1].lastChild.textContent = u().legendBooked;
+    if (legends[2]) legends[2].lastChild.textContent = u().legendSelected;
+    const selectedBar = $('.selected-seat-bar div');
+    if (selectedBar) selectedBar.innerHTML = `${u().selectedSeat} <span class="tag" id="selectedSeatTag">${state.selectedSeat || (state.language === 'en' ? 'Not selected' : 'Chưa chọn')}</span> <span style="color:var(--muted)">| ${state.language === 'en' ? 'Overnight Study Area - Floor 3' : 'Khu học qua đêm - Tầng 3'}</span>`;
+    setTxt('#clearSeat', u().clearSeat);
+    $$('.note-card').forEach((card, ci) => {
+      card.querySelector('h4').textContent = u().noteTitle;
+      card.querySelectorAll('li').forEach((li, i) => li.textContent = (ci === 0 ? u().roomNotes : u().nightNotes)[i]);
+    });
+    setTxt('.summary-card h3', u().summaryTitle);
+    setTxt('.payment-box', u().payment);
+    setTxt('#submitBooking', u().submit);
+    setTxt('.hint-box', u().hint);
+    setTxt('#profileMenuBtn', u().accountInfo);
+    setTxt('#historyMenuBtn', u().history);
+    setTxt('#logoutMenuBtn', u().logout);
+    setTxt('#accountHeading', $('#bookingHistoryCard')?.classList.contains('hidden') === false ? u().historyTitle : u().accountHeading);
+    setTxt('#account .page-desc', $('#bookingHistoryCard')?.classList.contains('hidden') === false ? u().historyDesc : u().accountDesc);
+    setTxt('#profileInfoCard h3', u().personal);
+    setTxt('#editProfileBtn', u().edit);
+    $$('#profileInfoCard .info-item span').forEach((el, i) => el.textContent = u().labels[i]);
+    setTxt('#recentActivityCard h3', u().recent);
+    setTxt('#recentActivityCard .card-desc', u().recentDesc);
+    setTxt('#bookingHistoryCard h3', u().historyTitle);
+    setTxt('#bookingHistoryCard .card-desc', u().historyDesc);
+    const opts = $$('#historyFilter option');
+    if (opts[0]) opts[0].textContent = u().filterAll;
+    if (opts[1]) opts[1].textContent = u().filterUpcoming;
+    if (opts[2]) opts[2].textContent = u().filterCancelled;
+    setTxt('#login .login-right h1', u().loginTitle);
+    setTxt('#login .login-right p', u().loginDesc);
+    const loginLabels = $$('#login .login-field label');
+    if (loginLabels[0]) loginLabels[0].textContent = u().studentEmail;
+    if (loginLabels[1]) loginLabels[1].textContent = u().password;
+    $('#loginEmail').placeholder = u().emailPlaceholder;
+    $('#loginPassword').placeholder = u().passwordPlaceholder;
+    setTxt('#doLogin', u().loginTitle);
+    setTxt('.login-note', u().loginNote);
+    const test = $('.test-accounts');
+    if (test) test.innerHTML = `<strong>${u().testAccounts}</strong><br>${u().standardAcc}<br>${u().clcAcc}`;
+    setTxt('.footer p', u().footerDesc);
+    setTxt('.footer strong', u().contact);
+    setTxt('#cancelModal h3', u().cancelTitle);
+    if (!state.cancelTargetId) setTxt('#cancelMessage', u().cancelDefault);
+    setTxt('#closeCancelModal', u().cancelNo);
+    setTxt('#confirmCancelBooking', u().cancelConfirm);
+  }
+
+  function renderAll() {
+    applyLanguage();
+    updateAuthUI();
+    renderProfile();
+    renderRoomTable();
+    renderSeats();
+    renderSummary();
+    renderHistory();
+  }
+
+  function logout() {
+    state.currentUserEmail = '';
+    localStorage.removeItem('libspaceCurrentUser');
+    updateAuthUI();
+    showToast(t().logoutSuccess);
+    navigate('home');
+  }
+
+  function setupEvents() {
+    $$('[data-page]').forEach(el => el.onclick = () => navigate(el.dataset.page));
+    $$('.side-option').forEach(btn => btn.onclick = () => setBookingType(btn.dataset.type));
+    ['roomDate', 'startTime', 'endTime'].forEach(id => $('#' + id).onchange = () => {
+      state.selectedRoom = null;
+      renderRoomTable();
+      renderSummary();
+    });
+    $('#nightDate').onchange = () => {
+      renderSeats();
+      renderSummary();
+    };
+    $('#submitBooking').onclick = createBooking;
+    $('#clearSeat').onclick = () => {
+      state.selectedSeat = null;
+      renderSeats();
+      renderSummary();
+    };
+    $('#doLogin').onclick = async () => {
+      const email = $('#loginEmail').value.trim().toLowerCase();
+      const password = $('#loginPassword').value;
+      try {
+        const response = await fetch('http://localhost:5000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        if (!response.ok) throw new Error('Invalid login');
+        const userData = await response.json();
+        state.currentUserEmail = email;
+        localStorage.setItem('libspaceCurrentUser', email);
+        saveCurrentUser(userData);
+        $('#loginEmail').value = '';
+        $('#loginPassword').value = '';
+        showToast(t().loginSuccess);
+        navigate('account');
+      } catch (err) {
+        showToast(t().invalidLogin);
+      }
+    };
+    $('#accountButton').onclick = e => {
+      e.stopPropagation();
+      $('#accountDropdown').classList.toggle('hidden');
+    };
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.nav-actions')) $('#accountDropdown').classList.add('hidden');
+    });
+    $('#openAccountFromDropdown').onclick = () => navigate('account');
+    $('#logoutFromDropdown').onclick = logout;
+    $('#logoutMenuBtn').onclick = logout;
+    $('#profileMenuBtn').onclick = () => showAccountTab('profile');
+    $('#historyMenuBtn').onclick = () => showAccountTab('history');
+    $('#historyFilter').onchange = renderHistory;
+    $('#cameraProfileBtn').onclick = openProfileEditor;
+    $('#closeCancelModal').onclick = () => $('#cancelModal').classList.add('hidden');
+    $('#confirmCancelBooking').onclick = confirmCancel;
+    $('#langToggle').onclick = () => {
+      state.language = state.language === 'vi' ? 'en' : 'vi';
+      localStorage.setItem('libspaceLang', state.language);
+      renderAll();
+    };
+    $('#floorPrevBtn').onclick = () => {
+      state.currentFloorIndex = (state.currentFloorIndex + 2) % 3;
+      renderFloorSlide();
+    };
+    $('#floorNextBtn').onclick = () => {
+      state.currentFloorIndex = (state.currentFloorIndex + 1) % 3;
+      renderFloorSlide();
+    };
+    $$('.floor-dots .dot').forEach((d, i) => d.onclick = () => {
+      state.currentFloorIndex = i;
+      renderFloorSlide();
+    });
+  }
+
+  function startFloorAutoSlide() {
+    clearInterval(state.floorAutoTimer);
+    state.floorAutoTimer = setInterval(() => {
+      if (state.page === 'about') {
+        state.currentFloorIndex = (state.currentFloorIndex + 1) % 3;
+        renderFloorSlide();
+      }
+    }, 3600);
+  }
+
+  function init() {
+    setupTimeOptions();
+    setupEvents();
+    setBookingType('room');
+    renderAll();
+    startFloorAutoSlide();
+  }
+
+  init();
+</script>
+</body>
+</html>
