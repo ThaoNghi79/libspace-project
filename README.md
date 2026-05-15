@@ -67,7 +67,7 @@ Only **Docker Desktop** is required. No Node.js, PostgreSQL, or Redis installati
 
 ```bash
 git clone https://github.com/ThaoNghi79/libspace-project.git
-cd libspace
+cd libspace-project
 ```
 
 **2. Start all services with a single command**
@@ -122,7 +122,7 @@ Use the following accounts to log in and test the system:
 ## Project Structure
 
 ```
-libspace/
+libspace-project/
 ├── frontend/
 │   ├── Dockerfile          # nginx:alpine — serves static assets
 │   └── index.html          # Single-Page Application (View layer)
