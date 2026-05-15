@@ -66,7 +66,7 @@ Only **Docker Desktop** is required. No Node.js, PostgreSQL, or Redis installati
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/lieuthaonghi/libspace.git
+git clone https://github.com/ThaoNghi79/libspace-project.git
 cd libspace
 ```
 
